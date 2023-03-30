@@ -102,7 +102,6 @@ func create(cmd *cobra.Command, _ []string) {
 			IssueType:      params.IssueType,
 			ParentIssueKey: params.ParentIssueKey,
 			Summary:        params.Summary,
-			Body:           params.Body,
 			Reporter:       params.Reporter,
 			Assignee:       params.Assignee,
 			Priority:       params.Priority,
@@ -112,6 +111,7 @@ func create(cmd *cobra.Command, _ []string) {
 			CustomFields:   params.CustomFields,
 			EpicField:      viper.GetString("epic.link"),
 		}
+		cr.ForBody(params.Body)
 		cr.ForProjectType(projectType)
 		cr.ForInstallationType(installation)
 		if configuredCustomFields, err := cmdcommon.GetConfiguredCustomFields(); err == nil {

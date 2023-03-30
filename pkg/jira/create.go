@@ -49,6 +49,14 @@ type CreateRequest struct {
 	configuredCustomFields []IssueTypeField
 }
 
+func (cr *CreateRequest) ForBody(body string) {
+	if strings.TrimSpace(body) == "" {
+		cr.Body = nil
+	} else {
+		cr.Body = body
+	}
+}
+
 // ForProjectType sets jira project type.
 func (cr *CreateRequest) ForProjectType(pt string) {
 	cr.projectType = pt
@@ -134,6 +142,8 @@ func (*Client) getRequestData(req *CreateRequest) *createRequest {
 	}
 
 	switch v := req.Body.(type) {
+	case nil:
+		cf.Description = nil
 	case string:
 		cf.Description = md.ToJiraMD(v)
 	case *adf.ADF:
