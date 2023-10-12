@@ -3,11 +3,12 @@ package jira
 import (
 	"context"
 	"encoding/json"
+	"fmt"
+	"io"
 	"net/http"
 	"strconv"
 	"strings"
 
-	"github.com/ankitpokhrel/jira-cli/pkg/adf"
 	"github.com/ankitpokhrel/jira-cli/pkg/md"
 )
 
@@ -78,6 +79,7 @@ func (c *Client) create(req *CreateRequest, ver string) (*CreateResponse, error)
 	data := c.getRequestData(req)
 
 	body, err := json.Marshal(&data)
+	fmt.Printf("%s\n", body)
 	if err != nil {
 		return nil, err
 	}
@@ -105,13 +107,16 @@ func (c *Client) create(req *CreateRequest, ver string) (*CreateResponse, error)
 	defer func() { _ = res.Body.Close() }()
 
 	if res.StatusCode != http.StatusCreated {
+		bod, _ := io.ReadAll(res.Body)
+		fmt.Printf("%s\n", bod)
 		return nil, formatUnexpectedResponse(res)
 	}
 
 	var out CreateResponse
 
 	err = json.NewDecoder(res.Body).Decode(&out)
-
+	fmt.Printf("%s\n", err)
+	fmt.Printf("%s\n", &out)
 	return &out, err
 }
 
@@ -133,12 +138,15 @@ func (*Client) getRequestData(req *CreateRequest) *createRequest {
 		epicField: req.EpicField,
 	}
 
-	switch v := req.Body.(type) {
-	case string:
-		cf.Description = md.ToJiraMD(v)
-	case *adf.ADF:
-		cf.Description = v
-	}
+	/*
+		switch v := req.Body.(type) {
+		case string:
+			cf.Description = md.ToJiraMD(v)
+		case *adf.ADF:
+			cf.Description = v
+		}
+	*/
+	cf.Description = nil
 
 	data := createRequest{
 		Update: struct{}{},
@@ -202,6 +210,20 @@ func (*Client) getRequestData(req *CreateRequest) *createRequest {
 		}
 		data.Fields.M.FixVersions = versions
 	}
+	if len(req.AffectsVersions) > 0 {
+		versions := make([]struct {
+			Name string `json:"name,omitempty"`
+		}, 0, len(req.AffectsVersions))
+
+		for _, v := range req.AffectsVersions {
+			versions = append(versions, struct {
+				Name string `json:"name,omitempty"`
+			}{v})
+		}
+		data.Fields.M.AffectsVersions = versions
+	}
+
+	req.CustomFields["userstory"] = md.ToJiraMD(req.Body.(string))
 	constructCustomFields(req.CustomFields, req.configuredCustomFields, &data)
 
 	return &data
