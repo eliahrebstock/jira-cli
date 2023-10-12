@@ -211,7 +211,7 @@ func (*Client) getRequestData(req *CreateRequest) *createRequest {
 		data.Fields.M.FixVersions = versions
 	}
 
-	req.CustomFields["userstory"] = md.ToJiraMD(req.Body.(string))
+	req.CustomFields["user-story"] = md.ToJiraMD(req.Body.(string))
 	constructCustomFields(req.CustomFields, req.configuredCustomFields, &data)
 
 	return &data
