@@ -3,8 +3,6 @@ package jira
 import (
 	"context"
 	"encoding/json"
-	"fmt"
-	"io"
 	"net/http"
 	"strconv"
 	"strings"
@@ -77,9 +75,7 @@ func (c *Client) CreateV2(req *CreateRequest) (*CreateResponse, error) {
 
 func (c *Client) create(req *CreateRequest, ver string) (*CreateResponse, error) {
 	data := c.getRequestData(req)
-
 	body, err := json.Marshal(&data)
-	fmt.Printf("%s\n", body)
 	if err != nil {
 		return nil, err
 	}
@@ -107,16 +103,12 @@ func (c *Client) create(req *CreateRequest, ver string) (*CreateResponse, error)
 	defer func() { _ = res.Body.Close() }()
 
 	if res.StatusCode != http.StatusCreated {
-		bod, _ := io.ReadAll(res.Body)
-		fmt.Printf("%s\n", bod)
 		return nil, formatUnexpectedResponse(res)
 	}
 
 	var out CreateResponse
 
 	err = json.NewDecoder(res.Body).Decode(&out)
-	fmt.Printf("%s\n", err)
-	fmt.Printf("%s\n", &out)
 	return &out, err
 }
 
