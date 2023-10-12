@@ -77,9 +77,9 @@ func (c *Client) CreateV2(req *CreateRequest) (*CreateResponse, error) {
 
 func (c *Client) create(req *CreateRequest, ver string) (*CreateResponse, error) {
 	data := c.getRequestData(req)
-	fmt.Printf("%#v	\n", data)
 
 	body, err := json.Marshal(&data)
+	fmt.Printf("%q\n", body)
 	if err != nil {
 		return nil, err
 	}
@@ -107,13 +107,15 @@ func (c *Client) create(req *CreateRequest, ver string) (*CreateResponse, error)
 	defer func() { _ = res.Body.Close() }()
 
 	if res.StatusCode != http.StatusCreated {
+		fmt.Printf("%q\n", res.Body)
 		return nil, formatUnexpectedResponse(res)
 	}
 
 	var out CreateResponse
 
 	err = json.NewDecoder(res.Body).Decode(&out)
-	fmt.Printf("%#v	\n", &out)
+	fmt.Printf("%q\n", err)
+	fmt.Printf("%q\n", &out)
 	return &out, err
 }
 
