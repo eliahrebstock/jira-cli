@@ -210,18 +210,6 @@ func (*Client) getRequestData(req *CreateRequest) *createRequest {
 		}
 		data.Fields.M.FixVersions = versions
 	}
-	if len(req.AffectsVersions) > 0 {
-		versions := make([]struct {
-			Name string `json:"name,omitempty"`
-		}, 0, len(req.AffectsVersions))
-
-		for _, v := range req.AffectsVersions {
-			versions = append(versions, struct {
-				Name string `json:"name,omitempty"`
-			}{v})
-		}
-		data.Fields.M.AffectsVersions = versions
-	}
 
 	req.CustomFields["userstory"] = md.ToJiraMD(req.Body.(string))
 	constructCustomFields(req.CustomFields, req.configuredCustomFields, &data)
