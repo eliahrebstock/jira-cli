@@ -3,6 +3,7 @@ package jira
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"strconv"
 	"strings"
@@ -82,6 +83,8 @@ func (c *Client) create(req *CreateRequest, ver string) (*CreateResponse, error)
 		return nil, err
 	}
 
+	fmt.Println(body)
+
 	header := Header{
 		"Accept":       "application/json",
 		"Content-Type": "application/json",
@@ -134,12 +137,12 @@ func (*Client) getRequestData(req *CreateRequest) *createRequest {
 	}
 
 	/*
-	switch v := req.Body.(type) {
-	case string:
-		cf.Description = md.ToJiraMD(v)
-	case *adf.ADF:
-		cf.Description = v
-	}
+		switch v := req.Body.(type) {
+		case string:
+			cf.Description = md.ToJiraMD(v)
+		case *adf.ADF:
+			cf.Description = v
+		}
 	*/
 	cf.Description = nil
 
