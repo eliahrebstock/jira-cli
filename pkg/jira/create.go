@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 	"strconv"
 	"strings"
@@ -79,7 +80,7 @@ func (c *Client) create(req *CreateRequest, ver string) (*CreateResponse, error)
 	data := c.getRequestData(req)
 
 	body, err := json.Marshal(&data)
-	fmt.Printf("%q\n", body)
+	fmt.Printf("%v\n", body)
 	if err != nil {
 		return nil, err
 	}
@@ -107,15 +108,16 @@ func (c *Client) create(req *CreateRequest, ver string) (*CreateResponse, error)
 	defer func() { _ = res.Body.Close() }()
 
 	if res.StatusCode != http.StatusCreated {
-		fmt.Printf("%q\n", res.Body)
+		bod, _ := io.ReadAll(res.Body)
+		fmt.Printf("%v\n", bod)
 		return nil, formatUnexpectedResponse(res)
 	}
 
 	var out CreateResponse
 
 	err = json.NewDecoder(res.Body).Decode(&out)
-	fmt.Printf("%q\n", err)
-	fmt.Printf("%q\n", &out)
+	fmt.Printf("%v\n", err)
+	fmt.Printf("%v\n", &out)
 	return &out, err
 }
 
