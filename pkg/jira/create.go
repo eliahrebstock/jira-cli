@@ -80,7 +80,7 @@ func (c *Client) create(req *CreateRequest, ver string) (*CreateResponse, error)
 	data := c.getRequestData(req)
 
 	body, err := json.Marshal(&data)
-	fmt.Printf("%v\n", body)
+	fmt.Printf("%s\n", body)
 	if err != nil {
 		return nil, err
 	}
@@ -109,15 +109,15 @@ func (c *Client) create(req *CreateRequest, ver string) (*CreateResponse, error)
 
 	if res.StatusCode != http.StatusCreated {
 		bod, _ := io.ReadAll(res.Body)
-		fmt.Printf("%v\n", bod)
+		fmt.Printf("%s\n", bod)
 		return nil, formatUnexpectedResponse(res)
 	}
 
 	var out CreateResponse
 
 	err = json.NewDecoder(res.Body).Decode(&out)
-	fmt.Printf("%v\n", err)
-	fmt.Printf("%v\n", &out)
+	fmt.Printf("%s\n", err)
+	fmt.Printf("%s\n", &out)
 	return &out, err
 }
 
