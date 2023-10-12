@@ -7,7 +7,6 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/ankitpokhrel/jira-cli/pkg/adf"
 	"github.com/ankitpokhrel/jira-cli/pkg/md"
 )
 
@@ -134,12 +133,15 @@ func (*Client) getRequestData(req *CreateRequest) *createRequest {
 		epicField: req.EpicField,
 	}
 
+	/*
 	switch v := req.Body.(type) {
 	case string:
 		cf.Description = md.ToJiraMD(v)
 	case *adf.ADF:
 		cf.Description = v
 	}
+	*/
+	cf.Description = nil
 
 	data := createRequest{
 		Update: struct{}{},
