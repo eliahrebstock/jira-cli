@@ -77,7 +77,7 @@ func (c *Client) CreateV2(req *CreateRequest) (*CreateResponse, error) {
 
 func (c *Client) create(req *CreateRequest, ver string) (*CreateResponse, error) {
 	data := c.getRequestData(req)
-	fmt.Println(data)
+	fmt.Printf("%#v	\n", data)
 
 	body, err := json.Marshal(&data)
 	if err != nil {
@@ -113,7 +113,7 @@ func (c *Client) create(req *CreateRequest, ver string) (*CreateResponse, error)
 	var out CreateResponse
 
 	err = json.NewDecoder(res.Body).Decode(&out)
-
+	fmt.Printf("%#v	\n", &out)
 	return &out, err
 }
 
